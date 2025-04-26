@@ -1,0 +1,106 @@
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 1122px;
+    height: auto;
+    /* Allow dynamic height for multiple pages */
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .page {
+    width: 1122px;
+    height: 794px;
+    /* Fixed A4 landscape height */
+    position: relative;
+    break-after: page;
+    overflow: visible;
+    /* Ensure content flows naturally */
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    /* Ensure content fills the card */
+  }
+</style>
+
+<body class="flex flex-col">
+  {{#each pages}}
+  <div class="page flex flex-col p-2">
+    <div class="flex flex-col h-full">
+
+      <!-- Header -->
+      <header class="text-center mb-2 shrink-0">
+        {{#if banner_image}}
+        <img src="{{banner_image}}" alt="Banner" class="w-full h-[80px] object-cover rounded-md" />
+        {{else}}
+        <h1 class="text-2xl font-extrabold text-green-800 tracking-wide">{{../title}}</h1>
+        {{#if is_festive}}
+        <p class="text-lg text-yellow-600 font-semibold mt-1">🎉 Festive Offer – Limited Time Only! 🎉</p>
+        {{/if}}
+        {{/if}}
+      </header>
+
+      <!-- Product Grid -->
+      <main class="flex-grow">
+        <div class="grid gap-1"
+          style="grid-template-columns: repeat({{cols}}, minmax(0, 1fr)); grid-template-rows: repeat({{../rows}}, auto);">
+          {{#each products}}
+          <div class="aspect-[3/4] border border-gray-300 rounded-md overflow-hidden" style="
+              font-size: {{cardFontSize ../rows ../cols}};
+              padding: {{cardPadding ../rows ../cols}};
+            ">
+            <div class="card-content h-full">
+              <div class="flex flex-col items-center">
+                <img src="{{image}}" alt="{{name}}" class="w-full h-auto object-cover rounded-t-md"
+                  style="max-height: 60%;" />
+                <div class="font-semibold text-center break-words line-clamp-2 p-1">{{name}}</div>
+                <div class="flex flex-col items-center p-1">
+                  {{#if (shouldShowDiscount mrp discount_type discount_value)}}
+                  <div class="text-green-600 font-bold">₹{{calculateDiscount mrp discount_type discount_value}}</div>
+                  <div class="line-through text-gray-500 text-xs">₹{{mrp}}</div>
+                  {{else}}
+                  <div class="text-black font-semibold">₹{{mrp}}</div>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="text-red-500 text-xs font-semibold p-0.5 bg-gray-50 text-center">
+                {{#if discount_type}}
+                {{formatDiscount discount_type discount_value}}
+                {{/if}}
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-2 border-t border-gray-200 pt-1 text-sm shrink-0">
+        <div class="flex justify-between items-start">
+          <div class="text-left">
+            <h2 class="text-blue-700 font-bold text-base">PURANIC HEALTH MART</h2>
+            <p>No 17, Haripriya Nagar,<br />Moka Road, Ballari - 583101</p>
+          </div>
+          <div class="text-center">
+            <img src="{{../logo}}" alt="Logo" class="w-12 h-12 object-contain mx-auto" />
+          </div>
+          <div class="text-right">
+            <p class="text-green-700 font-bold text-base">📞 CONTACT <span class="text-black">9663525262</span></p>
+            <p class="text-red-600 font-bold text-sm">🚚 FOR FREE HOME DELIVERY</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  {{/each}}
+</body>
