@@ -11,7 +11,7 @@ const { once } = require("events");
 const TAILWIND_CSS_CDN = `<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">`;
 
 const SHEET_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vReFSbcdyZtQmmpuKeo7Py1ZnEFK64KHUmcnbHkDUjd16tYhslE6bTVpQPEDGTY1v48aIuXZaQ2iHFZ/pub?gid=0&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vReFSbcdyZtQmmpuKeo7Py1ZnEFK64KHUmcnbHkDUjd16tYhslE6bTVpQPEDGTY1v48aIuXZaQ2iHFZ/pub?gid=1830408441&single=true&output=csv";
 
 const toSnakeCase = (str) =>
   str
@@ -26,6 +26,12 @@ const snakeCaseKeys = (obj) =>
 
 const logoBuffer = fs.readFileSync(path.join(__dirname, "../assets/logo.png"));
 const logoBase64 = `data:image/png;base64,${logoBuffer.toString("base64")}`;
+const deliveryBuffer = fs.readFileSync(
+  path.join(__dirname, "../assets/delivery.png")
+);
+const deliveryBase64 = `data:image/png;base64,${deliveryBuffer.toString(
+  "base64"
+)}`;
 
 const calculateDiscount = (mrp, type, value) => {
   if (type === "percent") return (mrp - (mrp * value) / 100).toFixed(2);
@@ -47,6 +53,16 @@ handlebars.registerHelper("shouldShowDiscount", (mrp, type, value) => {
   const discounted = calculateDiscount(mrp, type, value);
   if (type === "combo" || type === "text") return false;
   return parseFloat(discounted) !== parseFloat(mrp);
+});
+
+handlebars.registerHelper("cardHeight", (rows, cols) => {
+  const pageHeight = 842; // Approx A4 page height in px (landscape mode is 595 x 842)
+  const headerFooterReserve = 100; // pixels reserved for header + footer
+
+  const availableHeight = pageHeight - headerFooterReserve;
+  const cardHeight = Math.floor(availableHeight / rows);
+
+  return `${cardHeight}px`;
 });
 
 handlebars.registerHelper("cardFontSize", (rows, cols) => {
@@ -121,6 +137,7 @@ router.post("/", async (req, res) => {
           cols,
           pages: pages,
           logo: logoBase64,
+          delivery: deliveryBase64,
         });
 
         await page.setContent(html, { waitUntil: "networkidle0" });
@@ -158,6 +175,7 @@ router.post("/", async (req, res) => {
             cols,
             pages: [pages[i]],
             logo: logoBase64,
+            delivery: deliveryBase64,
           });
 
           await page.setContent(html, { waitUntil: "networkidle0" });
@@ -195,6 +213,7 @@ router.post("/", async (req, res) => {
         cols,
         pages,
         logo: logoBase64,
+        delivery: deliveryBase64,
       });
 
       await page.setContent(html, { waitUntil: "networkidle0" });
