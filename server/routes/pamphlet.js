@@ -6,7 +6,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const archiver = require("archiver");
-const { once } = require("events");
+const { convertPdfToCmyk } = require("../utils/cmykConverter");
 
 const TAILWIND_CSS_CDN = `<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">`;
 
@@ -229,12 +229,22 @@ router.post("/", async (req, res) => {
         printBackground: true,
       });
 
+      // Convert to CMYK here
+      const cmykFileName = fileName.replace(".pdf", "-cmyk.pdf");
+      const cmykOutputPath = path.join(outputDir, cmykFileName);
+      await convertPdfToCmyk(outputPath, cmykOutputPath);
+
       await browser.close();
 
       if (preview) {
-        res.json({ url: `/output/${fileName}` });
+        // res.json({ url: `/output/${fileName}` });
+        res.json({ url: `/output/${cmykFileName}` });
       } else {
-        res.download(outputPath, () => fs.unlinkSync(outputPath));
+        // res.download(outputPath, () => fs.unlinkSync(outputPath));
+        res.download(cmykOutputPath, () => {
+          fs.unlinkSync(outputPath); // Delete original RGB
+          fs.unlinkSync(cmykOutputPath); // Clean up CMYK after download
+        });
       }
     }
   } catch (err) {
