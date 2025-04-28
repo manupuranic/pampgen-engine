@@ -28,17 +28,16 @@
         {{#each pages}}
         <div class="page flex flex-col">
             <!-- Header -->
-            <header class="h-[80px] flex justify-center items-center px-4 mb-3">
-                {{#if ../banner_image}}
-                <img src="{{../banner_image}}" alt="Banner" class="w-full h-full object-cover rounded-md" />
-                {{else}}
+            <header class="h-[60px] flex justify-center items-center px-4 mb-1">
                 <div class="text-center w-full">
-                    <h1 class="text-2xl font-extrabold text-green-800 tracking-wide">{{../title}}</h1>
-                    {{#if ../is_festive}}
-                    <p class="text-lg text-yellow-600 font-semibold">🎉 Festive Offer – Limited Time Only! 🎉</p>
-                    {{/if}}
+                    <h1 class="text-2xl font-extrabold text-blue-700 tracking-wide">PURANIC HEALTH MART</h1>
                 </div>
-                {{/if}}
+                <div class="text-center">
+                    <img src="{{../logo}}" alt="Logo" class="w-20 h-20 object-contain mx-auto" />
+                </div>
+                <div class="text-center w-full">
+                    <h1 class="text-2xl font-extrabold text-green-700 tracking-wide">May Month Special Offers</h1>
+                </div>
             </header>
 
             <!-- Product Grid -->
@@ -102,9 +101,6 @@
                 <div class="text-left">
                     <h2 class="text-blue-700 font-bold text-sm">PURANIC HEALTH MART</h2>
                     <p>No 17, Haripriya Nagar,<br />Moka Road, Ballari - 583101</p>
-                </div>
-                <div class="text-center">
-                    <img src="{{../logo}}" alt="Logo" class="w-16 h-16 object-contain mx-auto" />
                 </div>
                 <div class="text-right flex justify-between align-center items-center">
                     <div>
